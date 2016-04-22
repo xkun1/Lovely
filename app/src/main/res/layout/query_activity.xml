@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="50dp"
+    android:layout_marginTop="10dp">
+
+    <com.rey.material.widget.EditText
+        android:id="@+id/edit_query"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="请输入要查询的身份证" />
+
+    <com.rey.material.widget.Button
+        android:id="@+id/query_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_query"
+        android:layout_marginLeft="20dp"
+        android:clickable="true"
+        android:text="查询" />
+
+    <android.inputmethodservice.ExtractEditText
+        android:id="@+id/ip_query"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/query_btn"
+        android:hint="请输入要查询的ip" />
+
+    <com.rey.material.widget.Button
+        android:id="@+id/query_ip_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ip_query"
+        android:layout_marginLeft="20dp"
+        android:clickable="true"
+        android:text="查询" />
+
+
+</RelativeLayout>

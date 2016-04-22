@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="tab_titles">
+        <item>热门精选</item>
+        <item>新闻资讯</item>
+        <item>美女图片</item>
+        <item>奇闻异事</item>
+        <item>旅游热点</item>
+        <item>科技新闻</item>
+        <item>娱乐花边</item>
+        <item>健康资讯</item>
+    </string-array>
+</resources>

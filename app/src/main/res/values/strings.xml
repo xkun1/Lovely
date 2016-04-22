@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">天知妹</string>
+
+    <string name="open">打开</string>
+    <string name="close">关闭</string>
+    <string name="name">小坤</string>
+    <string name="gmail">hekun947@gmail.com</string>
+    <string name="share">分享</string>
+    <string name="setting">设置</string>
+    <string name="two_dimensioncode">二维码</string>
+    <string name="identity_query">查询</string>
+    <string name="weather">天气</string>
+</resources>
