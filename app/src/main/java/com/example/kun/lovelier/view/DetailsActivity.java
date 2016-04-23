@@ -1,7 +1,13 @@
 package com.example.kun.lovelier.view;
 
 
+import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.os.Handler;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +18,10 @@ import android.widget.Toast;
 
 import com.example.kun.lovelier.R;
 import com.rey.material.widget.ProgressView;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
 
 /**
  * Created by kun on 2016/4/19.
@@ -37,7 +47,39 @@ public class DetailsActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.share) {
-            Toast.makeText(DetailsActivity.this, "分享", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(DetailsActivity.this, "分享", Toast.LENGTH_SHORT).show();
+
+            PackageInfo pkg = null;
+            try {
+                pkg = getPackageManager().getPackageInfo(getApplication().getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            String appName = pkg.applicationInfo.loadLabel(getPackageManager()).toString();
+            new ShareAction(DetailsActivity.this).setDisplayList(SHARE_MEDIA.SINA, SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE, SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE)
+                    .withTitle(appName)
+                    .withText("来自天知妹的分享")
+                    .withMedia(new UMImage(DetailsActivity.this, myShot(DetailsActivity.this)))
+                    .withTargetUrl(webView.getUrl())
+                    .setCallback(new UMShareListener() {
+                        @Override
+                        public void onResult(SHARE_MEDIA share_media) {
+                            Toast.makeText(DetailsActivity.this, share_media + "分享成功啦", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+                            Toast.makeText(DetailsActivity.this, share_media + "分享失败啦", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onCancel(SHARE_MEDIA share_media) {
+                            Toast.makeText(DetailsActivity.this, share_media + "分享取消了", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .open();
+
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -61,4 +103,40 @@ public class DetailsActivity extends BaseActivity {
             }
         });
     }
+
+
+
+    /**
+     * 截取当前界面
+     * @return
+     */
+    public Bitmap myShot(Activity activity) {
+        // 获取windows中最顶层的view
+        View view = activity.getWindow().getDecorView();
+        view.buildDrawingCache();
+
+        // 获取状态栏高度
+        Rect rect = new Rect();
+        view.getWindowVisibleDisplayFrame(rect);
+        int statusBarHeights = rect.top;
+        Display display = activity.getWindowManager().getDefaultDisplay();
+
+        // 获取屏幕宽和高
+        int widths = display.getWidth();
+        int heights = display.getHeight();
+
+        // 允许当前窗口保存缓存信息
+        view.setDrawingCacheEnabled(true);
+
+        // 去掉状态栏
+        Bitmap bmp = Bitmap.createBitmap(view.getDrawingCache(), 0,
+                statusBarHeights, widths, heights - statusBarHeights);
+
+        // 销毁缓存信息
+        view.destroyDrawingCache();
+
+        return bmp;
+    }
+
+
 }
