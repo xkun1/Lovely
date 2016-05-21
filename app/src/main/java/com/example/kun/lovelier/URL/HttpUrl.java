@@ -17,7 +17,7 @@ public class HttpUrl {
     public static final String CARDURL="http://apis.baidu.com/apistore/idservice/id?id=";
 
     //ip地址查询
-    public static final String URL="http://apis.baidu.com/apistore/iplookupservice/iplookup?ip=";
+    public static final String IP_URL="http://apis.baidu.com/apistore/iplookupservice/iplookup?ip=";
 
 
     //天气Api

@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+<!--
+    CoordinatorLayout是这次新添加的一个增强型的FrameLayout，通过它可以实现很多东西：
+        例如：
+            1.界面向上滚动逐渐隐藏Toolbar；
+            2.在其中可以放置浮动的View，就像Floating Action Button。
+-->
+
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -14,10 +23,25 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
+        <!--
+       app:layout_scrollFlags的意思是：
+
+           设置的layout_scrollFlags有如下几种选项：
+               scroll: 所有想滚动出屏幕的view都需要设置这个flag- 没有设置这个flag的view将被固定在屏幕顶部。
+               enterAlways: 这个flag让任意向下的滚动都会导致该view变为可见，启用快速“返回模式”。
+               enterAlwaysCollapsed: 当你的视图已经设置minHeight属性又使用此标志时，你的视图只能以最小高度进入，只有当滚动视图到达顶部时才扩大到完整高度。
+               exitUntilCollapsed: 当视图会在滚动时，它一直滚动到设置的minHeight时完全隐藏。
+
+       需要注意的是，后面两种模式基本只有在CollapsingToolbarLayout才有用，
+       而前面两种模式基本是需要一起使用的，也就是说，这些flag的使用场景，基本已经固定了。
+   -->
+
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 

@@ -2,6 +2,7 @@ package com.example.kun.lovelier.view;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -47,8 +48,6 @@ public class DetailsActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.share) {
-//            Toast.makeText(DetailsActivity.this, "分享", Toast.LENGTH_SHORT).show();
-
             PackageInfo pkg = null;
             try {
                 pkg = getPackageManager().getPackageInfo(getApplication().getPackageName(), 0);
@@ -57,10 +56,10 @@ public class DetailsActivity extends BaseActivity {
             }
 
             String appName = pkg.applicationInfo.loadLabel(getPackageManager()).toString();
-            new ShareAction(DetailsActivity.this).setDisplayList(SHARE_MEDIA.SINA, SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE, SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE)
+            new ShareAction(this).setDisplayList(SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE)
                     .withTitle(appName)
                     .withText("来自天知妹的分享")
-                    .withMedia(new UMImage(DetailsActivity.this, myShot(DetailsActivity.this)))
+                    .withMedia(new UMImage(this, myShot(this)))
                     .withTargetUrl(webView.getUrl())
                     .setCallback(new UMShareListener() {
                         @Override
@@ -93,23 +92,43 @@ public class DetailsActivity extends BaseActivity {
 
 
         webView.loadUrl(getIntent().getStringExtra("weburl"));
-
+        final ProgressDialog mDialog = new ProgressDialog(this, ProgressDialog.STYLE_SPINNER);
         webView.setWebViewClient(new WebViewClient() {
-            //当点击链接时,希望覆盖而不是打开新窗口
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);  //加载新的url
-                return true;    //返回true,代表事件已处理,事件流到此终止
-            }
-        });
-    }
+                                     //当点击链接时,希望覆盖而不是打开新窗口
+                                     @Override
+                                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                                         view.loadUrl(url);  //加载新的url
+                                         return true;    //返回true,代表事件已处理,事件流到此终止
+                                     }
 
+                                     @Override
+                                     public void onPageFinished(WebView view, String url) {
+                                         mDialog.dismiss();
+                                         //页面加载完毕
+                                         super.onPageFinished(view, url);
+                                     }
+
+                                     @Override
+                                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                                         //页面开始加载
+                                         super.onPageStarted(view, url, favicon);
+                                         mDialog.setMessage("加载中...");
+                                         mDialog.setCancelable(true);
+                                         mDialog.show();
+                                     }
+
+                                 }
+
+        );
+    }
 
 
     /**
      * 截取当前界面
+     *
      * @return
      */
+
     public Bitmap myShot(Activity activity) {
         // 获取windows中最顶层的view
         View view = activity.getWindow().getDecorView();

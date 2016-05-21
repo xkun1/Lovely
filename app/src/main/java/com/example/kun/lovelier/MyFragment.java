@@ -88,7 +88,7 @@ public class MyFragment extends Fragment {
                 mRefreshLayout.setRefreshing(true);
             }
         });
-        //2秒后关闭
+//        2秒后关闭
         new Handler().postDelayed(new Runnable() {
 
             @Override
@@ -213,6 +213,7 @@ public class MyFragment extends Fragment {
         progressView.setVisibility(View.GONE);
         return footerView;
     }
+
 
     private void loading(boolean isrefresh) {
 
@@ -416,7 +417,7 @@ public class MyFragment extends Fragment {
 
                             ImageDiaLog imageDiaLog = new ImageDiaLog();
                             Bundle bundle = new Bundle();
-                            
+
                             bundle.putString("imgurl", item.getPicUrl());
                             imageDiaLog.setArguments(bundle);
 

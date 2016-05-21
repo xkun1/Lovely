@@ -11,7 +11,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -24,6 +23,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 
+import com.example.kun.lovelier.ZXing.CaptureActivity;
 import com.example.kun.lovelier.adapter.MyViewPagerAdapter;
 import com.example.kun.lovelier.view.BaseActivity;
 import com.example.kun.lovelier.view.QueryAll;
@@ -42,7 +42,7 @@ public class MainActivity extends BaseActivity
 
     private long exitTime = 0;
 
-    private CoordinatorLayout mCoordinatorLayout;
+    private CoordinatorLayout mCoordinatorLayout;  //增强的FragmeLayout
     private AppBarLayout mAppBarLayout;
     private Toolbar mToolbar;
     private TabLayout mTabLayout;
@@ -90,7 +90,7 @@ public class MainActivity extends BaseActivity
         mViewPager.setAdapter(mViewPagerAdapter);
 
         // 给ViewPager添加页面动态监听器（为了让Toolbar中的Title可以变化相应的Tab的标题）
-        mViewPager.addOnPageChangeListener(this);
+        mViewPager.setOnPageChangeListener(this);
 
         mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         // 将TabLayout和ViewPager进行关联，让两者联动起来
@@ -170,6 +170,7 @@ public class MainActivity extends BaseActivity
         }
     }
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -182,13 +183,16 @@ public class MainActivity extends BaseActivity
 //                Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.two_code: //二维码
-                Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();
+                Intent intentcode = new Intent();
+                intentcode.setClass(MainActivity.this, CaptureActivity.class);
+                startActivity(intentcode);
                 break;
             case R.id.query: //查询
-                Toast.makeText(MainActivity.this,"正在开发。。。",Toast.LENGTH_SHORT).show();
-//                Intent intent = new Intent();
-//                intent.setClass(MainActivity.this, QueryAll.class);
-//                startActivity(intent);
+//                Toast.makeText(MainActivity.this,"正在开发。。。",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, QueryAll.class);
+                startActivity(intent);
                 break;
             case R.id.nav_share: //分享
                 Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();

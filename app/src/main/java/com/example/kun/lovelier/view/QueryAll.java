@@ -80,13 +80,13 @@ public class QueryAll extends BaseActivity implements View.OnClickListener {
     }
 
     public Card_Data loding(String str){
-        String request = Httploading.request(HttpUrl.WEATH, str);
+        String request = Httploading.request(HttpUrl.CARDURL, str);
          card_data = gson.fromJson(request, Card_Data.class);
         return card_data;
     }
 
     public Ip_Data lodingIp(String str){
-        String request = Httploading.request(HttpUrl.CARDURL, str);
+        String request = Httploading.request(HttpUrl.IP_URL, str);
         card_data = gson.fromJson(request, Card_Data.class);
         return ip_data;
     }
