@@ -88,15 +88,6 @@ public class MyFragment extends Fragment {
                 mRefreshLayout.setRefreshing(true);
             }
         });
-//        2秒后关闭
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                mRefreshLayout.setRefreshing(false);
-                headprogressView.setVisibility(View.GONE);
-            }
-        }, 2000);
     }
 
     private void init(View view) {
@@ -119,9 +110,10 @@ public class MyFragment extends Fragment {
         //设置item之间的间隔
         SpacesItemDecoration decoration = new SpacesItemDecoration(5);
         mRecyclerView.addItemDecoration(decoration);
-
-
     }
+
+
+
 
     private void refresh() {
 
@@ -136,14 +128,13 @@ public class MyFragment extends Fragment {
                 datas.clear();
                 loading(true);
                 headprogressView.setVisibility(View.VISIBLE);
-                new Handler().postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        mRefreshLayout.setRefreshing(false);
-                        headprogressView.setVisibility(View.GONE);
-                    }
-                }, 2000);
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mRefreshLayout.setRefreshing(false);
+//                        headprogressView.setVisibility(View.GONE);
+//                    }
+//                }, 2000);
             }
 
             @Override
@@ -164,14 +155,13 @@ public class MyFragment extends Fragment {
             public void onLoadMore() {
                 progressView.setVisibility(View.VISIBLE);
                 moreLoading(true);
-                new Handler().postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        progressView.setVisibility(View.GONE);
-                        mRefreshLayout.setLoadMore(false);
-                    }
-                }, 5000);
+//                new Handler().postDelayed(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//
+//                    }
+//                }, 3000);
             }
 
             @Override
@@ -227,6 +217,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            mRefreshLayout.setRefreshing(false);
+                            headprogressView.setVisibility(View.GONE);
                         }
                     });
                     break;
@@ -237,6 +229,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            mRefreshLayout.setRefreshing(false);
+                            headprogressView.setVisibility(View.GONE);
                         }
                     });
                     break;
@@ -247,6 +241,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            mRefreshLayout.setRefreshing(false);
+                            headprogressView.setVisibility(View.GONE);
                         }
                     });
                     break;
@@ -257,6 +253,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            mRefreshLayout.setRefreshing(false);
+                            headprogressView.setVisibility(View.GONE);
                         }
                     });
                     break;
@@ -267,6 +265,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            mRefreshLayout.setRefreshing(false);
+                            headprogressView.setVisibility(View.GONE);
                         }
                     });
                     break;
@@ -277,6 +277,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            mRefreshLayout.setRefreshing(false);
+                            headprogressView.setVisibility(View.GONE);
                         }
                     });
                     break;
@@ -287,6 +289,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            mRefreshLayout.setRefreshing(false);
+                            headprogressView.setVisibility(View.GONE);
                         }
                     });
                     break;
@@ -297,6 +301,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            mRefreshLayout.setRefreshing(false);
+                            headprogressView.setVisibility(View.GONE);
                         }
                     });
                     break;
@@ -315,6 +321,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            progressView.setVisibility(View.GONE);
+                            mRefreshLayout.setLoadMore(false);
                         }
                     });
                     break;
@@ -325,6 +333,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            progressView.setVisibility(View.GONE);
+                            mRefreshLayout.setLoadMore(false);
                         }
                     });
                     break;
@@ -335,6 +345,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            progressView.setVisibility(View.GONE);
+                            mRefreshLayout.setLoadMore(false);
                         }
                     });
                     break;
@@ -345,6 +357,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            progressView.setVisibility(View.GONE);
+                            mRefreshLayout.setLoadMore(false);
                         }
                     });
                     break;
@@ -355,6 +369,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            progressView.setVisibility(View.GONE);
+                            mRefreshLayout.setLoadMore(false);
                         }
                     });
                     break;
@@ -365,6 +381,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            progressView.setVisibility(View.GONE);
+                            mRefreshLayout.setLoadMore(false);
                         }
                     });
                     break;
@@ -375,6 +393,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            progressView.setVisibility(View.GONE);
+                            mRefreshLayout.setLoadMore(false);
                         }
                     });
                     break;
@@ -385,6 +405,8 @@ public class MyFragment extends Fragment {
                             DataBean dataBean = gson.fromJson(t, DataBean.class);
                             datas.addAll(dataBean.getNewslist());
                             adapter.notifyDataSetChanged();
+                            progressView.setVisibility(View.GONE);
+                            mRefreshLayout.setLoadMore(false);
                         }
                     });
                     break;

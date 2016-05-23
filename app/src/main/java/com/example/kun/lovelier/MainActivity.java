@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,7 +24,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 
-import com.example.kun.lovelier.ZXing.CaptureActivity;
+import com.bigdata.zixinglibrary.ZXing.CaptureActivity;
 import com.example.kun.lovelier.adapter.MyViewPagerAdapter;
 import com.example.kun.lovelier.view.BaseActivity;
 import com.example.kun.lovelier.view.QueryAll;
@@ -60,12 +61,13 @@ public class MainActivity extends BaseActivity
     @Override
 
     protected void initContentView() {
+
+
         setContentView(R.layout.activity_main);
         //初始化各种控件
         initView();
 
         // 初始化mTitles、mFragments等ViewPager需要的数据
-        //这里的数据都是模拟出来了，自己手动生成的，在项目中需要从网络获取数据
         initData();
 
         // 对各种控件进行设置、适配、填充数据
@@ -208,6 +210,22 @@ public class MainActivity extends BaseActivity
         mDrawerLayout.closeDrawers();
         return true;
     }
+
+    /**
+     * 隐藏ActionBar中的某一个menu
+     *
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.share);
+        item.setVisible(false);
+        return true;
+
+    }
+
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
