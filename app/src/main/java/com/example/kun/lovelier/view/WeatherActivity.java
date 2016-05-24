@@ -2,8 +2,12 @@ package com.example.kun.lovelier.view;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,18 +20,23 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.location.Poi;
 import com.example.kun.lovelier.R;
 import com.example.kun.lovelier.URL.HttpUrl;
+import com.example.kun.lovelier.adapter.BaseRecyclerAdapter;
+import com.example.kun.lovelier.adapter.RecyclerHolder;
+import com.example.kun.lovelier.adapter.SpacesItemDecoration;
 import com.example.kun.lovelier.dialog.WeatherDialog;
 import com.example.kun.lovelier.moudle.WeatherBean;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.client.HttpCallback;
+import com.rey.material.widget.ListView;
 import com.rey.material.widget.ProgressView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,15 +51,14 @@ public class WeatherActivity extends BaseActivity {
 
     private Gson gson;
 
-    private SuperSwipeRefreshLayout mRefreshLayout;//刷新控件
 
-    private ProgressView progressView;  //底部刷新圈
+    private List<WeatherBean.WeatherBeanBean.DailyForecastBean> dailyForecastBean;//未来几天集合
 
-    private ProgressView headprogressView;//头部刷新圈
+    private RecyclerView mRecyclerView;
 
-    private LinearLayout linearLayout;//填充布局
+    private BaseRecyclerAdapter<WeatherBean.WeatherBeanBean.DailyForecastBean> recyclerAdapter;
 
-    private LayoutInflater inflater;
+    private List<WeatherBean.WeatherBeanBean> weatherList;
 
 
     private TextView now_tmp, now_cond, ip_aqi, cityText, locText;
@@ -58,113 +66,51 @@ public class WeatherActivity extends BaseActivity {
     @Override
     protected void initContentView() {
         setContentView(R.layout.weather_activity);
+
         initbaidu();
+
         gson = new Gson();
+        weatherList = new ArrayList<>();
+
+        dailyForecastBean = new ArrayList<>();
 
         initView();
 
-        init();
+        recyclerAdapter = new BaseRecyclerAdapter<WeatherBean.WeatherBeanBean.DailyForecastBean>(mRecyclerView, dailyForecastBean, R.layout.weather_ry_item) {
+            @Override
+            public void convert(RecyclerHolder holder, WeatherBean.WeatherBeanBean.DailyForecastBean item, int position, boolean isScrolling) {
+                holder.setText(R.id.item_date, item.getDate());
+                holder.setText(R.id.item_tmp, item.getTmp().getMax() + "/" + item.getTmp().getMin());
+                holder.setText(R.id.item_feng, item.getWind().getDir());
+                holder.setText(R.id.item_txt_d_n, item.getCond().getTxt_d() + "/" + item.getCond().getTxt_n());
+            }
+        };
 
-        refresh();
+        initRecycler();
+//
+//        init();
+//
+//        refresh();
+
 
     }
 
-
-    /**
-     * 定义头部刷新布局
-     *
-     * @return
-     */
-    private View createHeaderView() {
-        View headerView = LayoutInflater.from(mRefreshLayout.getContext())
-                .inflate(R.layout.head_layout, null);
-        headprogressView = (ProgressView) headerView.findViewById(R.id.pb_view);
-        headprogressView.setVisibility(View.GONE);
-        return headerView;
+    private void initRecycler() {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mRecyclerView.setAdapter(recyclerAdapter);
+        SpacesItemDecoration decoration = new SpacesItemDecoration(5);
+        mRecyclerView.addItemDecoration(decoration);
     }
 
-    /**
-     * 定义加载更多布局
-     *
-     * @return
-     */
-    private View createFooterView() {
-        View footerView = LayoutInflater.from(mRefreshLayout.getContext())
-                .inflate(R.layout.more_layout, null);
-        progressView = (ProgressView) footerView.findViewById(R.id.Footer);
-        progressView.setVisibility(View.GONE);
-        return footerView;
-    }
-
-    private void refresh() {
-        mRefreshLayout.setTargetScrollWithLayout(true);
-        mRefreshLayout.setHeaderView(createHeaderView());
-        mRefreshLayout.setFooterView(createFooterView());
-
-        //下拉刷新
-        mRefreshLayout.setOnPullRefreshListener(new SuperSwipeRefreshLayout.OnPullRefreshListener() {
-            @Override
-            public void onRefresh() {
-                initbaidu();
-                headprogressView.setVisibility(View.VISIBLE);
-                new Handler().postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        mRefreshLayout.setRefreshing(false);
-                        headprogressView.setVisibility(View.GONE);
-                    }
-                }, 2000);
-            }
-
-            @Override
-            public void onPullDistance(int distance) {
-
-            }
-
-            @Override
-            public void onPullEnable(boolean enable) {
-
-            }
-        });
-
-    }
-
-    private void init() {
-        inflater = getLayoutInflater();
-        /**
-         * 刚进入程序刷新
-         */
-        mRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                headprogressView.setVisibility(View.VISIBLE);
-                mRefreshLayout.setRefreshing(true);
-            }
-        });
-        //2秒后关闭
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                mRefreshLayout.setRefreshing(false);
-                headprogressView.setVisibility(View.GONE);
-            }
-        }, 2000);
-    }
 
     private void initView() {
-
-        linearLayout = (LinearLayout) findViewById(R.id.linerlayout);
-
-
-        mRefreshLayout = (SuperSwipeRefreshLayout) findViewById(R.id.swipe_container);
 
         now_tmp = (TextView) findViewById(R.id.now_tmp);
         now_cond = (TextView) findViewById(R.id.now_cond);
         ip_aqi = (TextView) findViewById(R.id.ip_qlty);
         cityText = (TextView) findViewById(R.id.city);
         locText = (TextView) findViewById(R.id.loc);
+        mRecyclerView = (RecyclerView) findViewById(R.id.weather_recycler);
     }
 
     private void loading(String string, boolean isfalg) {
@@ -172,54 +118,24 @@ public class WeatherActivity extends BaseActivity {
             RxVolley.get(HttpUrl.WEATH + string, new HttpCallback() {
                 @Override
                 public void onSuccess(String t) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(t);
-                        JSONArray array = jsonObject.getJSONArray("HeWeather data service 3.0");
-                        JSONObject object = array.getJSONObject(0);
-                        JSONArray hourly_forecast = object.getJSONArray("hourly_forecast");
-                        JSONObject basic = object.getJSONObject("basic");
-                        JSONObject update = basic.getJSONObject("update");
-                        JSONObject api = object.getJSONObject("aqi");
-                        final JSONObject city = api.getJSONObject("city");
-                        JSONObject now = object.getJSONObject("now");
-                        JSONObject code = now.getJSONObject("cond");
-                        ip_aqi.setText(city.optString("qlty"));  //空气质量类别
-                        now_tmp.setText(now.optString("tmp"));  //当前温度
-                        now_cond.setText(code.optString("txt")); // 天气状况
-                        cityText.setText(basic.optString("city"));//当前城市
-                        locText.setText(update.optString("loc")); //当前更新时间
 
-                        ip_aqi.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                WeatherDialog dialog = new WeatherDialog();
-                                Bundle bundle = new Bundle();
-                                bundle.putString("api", city.optString("api"));
-                                bundle.putString("no2", city.optString("no2"));
-                                bundle.putString("pm10", city.optString("pm10"));
-                                bundle.putString("pm25", city.optString("pm25"));
-                                bundle.putString("so2", city.optString("so2"));
-                                dialog.setArguments(bundle);
-                                dialog.show(getFragmentManager(), "");
-                            }
-                        });
+                    String weatherStr = t.replace("HeWeather data service 3.0", "weatherBean");
+
+                    WeatherBean weatherBean = gson.fromJson(weatherStr, WeatherBean.class);
+                    weatherList.add(weatherBean.getWeatherBean().get(0));
 
 
-                        for (int i = 0; i < hourly_forecast.length(); i++) {
-                            View inflate = inflater.inflate(R.layout.item_linear, null);
-                            TextView time = (TextView) inflate.findViewById(R.id.time);
-                            TextView tmp = (TextView) inflate.findViewById(R.id.tmp);
-                            String nowtime = hourly_forecast.getJSONObject(i).optString("date");
-                            String str = nowtime.replace(" ", "");
-                            time.setText(str.substring(str.length()-5));
-                            tmp.setText(hourly_forecast.getJSONObject(i).optString("tmp"));
-                            linearLayout.addView(inflate);
-                        }
+                    WeatherBean.WeatherBeanBean weatherBeanBean = weatherList.get(0);
 
+                    dailyForecastBean.addAll(weatherBeanBean.getDaily_forecast());
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    recyclerAdapter.notifyDataSetChanged();
+
+                    ip_aqi.setText(weatherBeanBean.getAqi().getCity().getAqi());  //空气质量类别
+                    now_tmp.setText(weatherBeanBean.getNow().getTmp());  //当前温度
+                    now_cond.setText(weatherBeanBean.getNow().getCond().getTxt()); // 天气状况
+                    cityText.setText(weatherBeanBean.getBasic().getCity());//当前城市
+                    locText.setText(weatherBeanBean.getBasic().getUpdate().getLoc()); //当前更新时间
 
                 }
             });
@@ -258,6 +174,29 @@ public class WeatherActivity extends BaseActivity {
         mLocationClient.setLocOption(option);
     }
 
+    /**
+     * 隐藏ActionBar中的某一个menu
+     *
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item = menu.findItem(R.id.share);
+        item.setVisible(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.rotate) {
+            dailyForecastBean.clear();
+            initbaidu();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onDestroy() {

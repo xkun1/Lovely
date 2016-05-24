@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -157,5 +158,11 @@ public class DetailsActivity extends BaseActivity {
         return bmp;
     }
 
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem item02 = menu.findItem(R.id.rotate);
+        item02.setVisible(false);
+        return true;
+    }
 }

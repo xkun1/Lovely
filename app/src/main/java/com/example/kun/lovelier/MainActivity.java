@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.bigdata.zixinglibrary.ZXing.CaptureActivity;
 import com.example.kun.lovelier.adapter.MyViewPagerAdapter;
 import com.example.kun.lovelier.view.BaseActivity;
+import com.example.kun.lovelier.view.OrCodeResult;
 import com.example.kun.lovelier.view.QueryAll;
 import com.example.kun.lovelier.view.WeatherActivity;
 
@@ -188,13 +189,13 @@ public class MainActivity extends BaseActivity
 //                Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();
                 Intent intentcode = new Intent();
                 intentcode.setClass(MainActivity.this, CaptureActivity.class);
-                startActivity(intentcode);
+                startActivityForResult(intentcode, 1);
                 break;
             case R.id.query: //查询
 //                Toast.makeText(MainActivity.this,"正在开发。。。",Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, QueryAll.class);
-                startActivity(intent);
+//                Intent intent = new Intent();
+//                intent.setClass(MainActivity.this, QueryAll.class);
+//                startActivity(intent);
                 break;
             case R.id.nav_share: //分享
                 Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();
@@ -211,6 +212,23 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 1) {
+                String action = data.getExtras().getString("result");
+                Intent intent = new Intent();
+                intent.putExtra("result", action);
+                intent.setClass(this, OrCodeResult.class);
+                startActivity(intent);
+            }
+        } else {
+            return;
+        }
+    }
+
     /**
      * 隐藏ActionBar中的某一个menu
      *
@@ -220,10 +238,11 @@ public class MainActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem item = menu.findItem(R.id.share);
-        item.setVisible(false);
+        MenuItem item01 = menu.findItem(R.id.share);
+        MenuItem item02 = menu.findItem(R.id.rotate);
+        item01.setVisible(false);
+        item02.setVisible(false);
         return true;
-
     }
 
 

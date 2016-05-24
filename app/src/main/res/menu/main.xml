@@ -12,5 +12,11 @@
         android:orderInCategory="100"
         android:icon="@android:drawable/ic_menu_share"
         app:showAsAction="ifRoom"/>
+    <item
+        android:title="分享"
+        android:id="@+id/rotate"
+        android:orderInCategory="100"
+        android:icon="@android:drawable/ic_menu_rotate"
+        app:showAsAction="ifRoom"/>
 
 </menu>
