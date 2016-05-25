@@ -2,6 +2,10 @@ package com.example.kun.lovelier;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -11,6 +15,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -21,17 +26,21 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.bigdata.zixinglibrary.ZXing.CaptureActivity;
 import com.example.kun.lovelier.adapter.MyViewPagerAdapter;
 import com.example.kun.lovelier.view.BaseActivity;
+import com.example.kun.lovelier.view.MaterialActivity;
 import com.example.kun.lovelier.view.OrCodeResult;
 import com.example.kun.lovelier.view.QueryAll;
 import com.example.kun.lovelier.view.WeatherActivity;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +48,7 @@ public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener
         , ViewPager.OnPageChangeListener {
 
+    private static final String TAG = "MainActivity";
 
     private DrawerLayout mDrawerLayout;
 
@@ -52,6 +62,10 @@ public class MainActivity extends BaseActivity
     private FloatingActionButton mFloatingActionButton;
     private NavigationView mNavigationView;
 
+    private RoundedImageView imageView;//首页头像
+
+    private TextView nametxt;//首页name
+
     private String[] mTitles;  //TabLayout标题
 
     // 填充到ViewPager中的Fragment
@@ -63,11 +77,18 @@ public class MainActivity extends BaseActivity
 
     protected void initContentView() {
 
-
         setContentView(R.layout.activity_main);
+
+
         //初始化各种控件
         initView();
 
+        SharedPreferences preferences = getSharedPreferences("imgUrl", MODE_PRIVATE);
+
+        String imgUrl = preferences.getString("imgUrl", null);
+        if (imgUrl != null) {
+            imageView.setImageURI(Uri.parse(imgUrl));
+        }
         // 初始化mTitles、mFragments等ViewPager需要的数据
         initData();
 
@@ -160,6 +181,22 @@ public class MainActivity extends BaseActivity
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.id_floatingactionbutton);
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
 
+
+        View headerView = mNavigationView.getHeaderView(0);
+
+        imageView = (RoundedImageView) headerView.findViewById(R.id.imageView);
+        nametxt = (TextView) headerView.findViewById(R.id.name_txt);
+
+        /**
+         * 设置：
+         */
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getImageFromAlbum();
+            }
+        });
+
     }
 
 
@@ -183,7 +220,6 @@ public class MainActivity extends BaseActivity
                 Intent intentWe = new Intent();
                 intentWe.setClass(MainActivity.this, WeatherActivity.class);
                 startActivity(intentWe);
-//                Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.two_code: //二维码
 //                Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();
@@ -192,7 +228,7 @@ public class MainActivity extends BaseActivity
                 startActivityForResult(intentcode, 1);
                 break;
             case R.id.query: //查询
-//                Toast.makeText(MainActivity.this,"正在开发。。。",Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();
 //                Intent intent = new Intent();
 //                intent.setClass(MainActivity.this, QueryAll.class);
 //                startActivity(intent);
@@ -205,8 +241,8 @@ public class MainActivity extends BaseActivity
                 break;
         }
 
-
         // Menu item点击后选中，并关闭Drawerlayout
+        setTitle(menuItem.getTitle()); // 改变页面标题，标明导航状态
         menuItem.setChecked(true);
         mDrawerLayout.closeDrawers();
         return true;
@@ -223,6 +259,11 @@ public class MainActivity extends BaseActivity
                 intent.putExtra("result", action);
                 intent.setClass(this, OrCodeResult.class);
                 startActivity(intent);
+            } else if (requestCode == 2) {
+                Uri imgUrl = data.getData();
+                SharedPreferences preferences = getSharedPreferences("imgUrl", MODE_PRIVATE);
+                preferences.edit().putString("imgUrl", String.valueOf(imgUrl)).commit();
+                imageView.setImageURI(imgUrl);
             }
         } else {
             return;
@@ -260,5 +301,14 @@ public class MainActivity extends BaseActivity
     public void onPageScrollStateChanged(int state) {
 
     }
+
+
+    protected void getImageFromAlbum() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");//相片类型
+        startActivityForResult(intent, 2);
+    }
+
+
 }
 

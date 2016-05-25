@@ -20,7 +20,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- SD卡读取权限，用户写入离线定位数据-->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"></uses-permission>
-
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" ></uses-permission>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -68,6 +68,9 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".view.OrCodeResult"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".view.MaterialActivity"
             android:parentActivityName=".MainActivity" />
 
         <!--友盟分享-->

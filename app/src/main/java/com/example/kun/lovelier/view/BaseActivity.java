@@ -2,6 +2,7 @@ package com.example.kun.lovelier.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import com.example.kun.lovelier.R;
 public abstract class BaseActivity extends AppCompatActivity {
 
     private static final String TAG = "BaseActivity";
+
 
 
     @Override
@@ -96,6 +98,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+
+
 
 
     @Override

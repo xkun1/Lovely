@@ -56,6 +56,8 @@ public class WeatherActivity extends BaseActivity {
 
     private RecyclerView mRecyclerView;
 
+    private WeatherBean weatherBean;
+
     private BaseRecyclerAdapter<WeatherBean.WeatherBeanBean.DailyForecastBean> recyclerAdapter;
 
     private List<WeatherBean.WeatherBeanBean> weatherList;
@@ -87,11 +89,6 @@ public class WeatherActivity extends BaseActivity {
         };
 
         initRecycler();
-//
-//        init();
-//
-//        refresh();
-
 
     }
 
@@ -121,7 +118,7 @@ public class WeatherActivity extends BaseActivity {
 
                     String weatherStr = t.replace("HeWeather data service 3.0", "weatherBean");
 
-                    WeatherBean weatherBean = gson.fromJson(weatherStr, WeatherBean.class);
+                    weatherBean = gson.fromJson(weatherStr, WeatherBean.class);
                     weatherList.add(weatherBean.getWeatherBean().get(0));
 
 
@@ -192,6 +189,7 @@ public class WeatherActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.rotate) {
             dailyForecastBean.clear();
+            weatherBean = null;
             initbaidu();
             return true;
         }
