@@ -1,6 +1,7 @@
 package com.example.kun.lovelier.view;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +19,6 @@ import com.example.kun.lovelier.R;
 public abstract class BaseActivity extends AppCompatActivity {
 
     private static final String TAG = "BaseActivity";
-
 
 
     @Override
@@ -85,7 +85,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() ==android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             this.finish();
             return true;
         }
@@ -98,8 +98,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
-
-
 
 
     @Override
@@ -137,5 +135,44 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG, "onDestroy: >>>>>>>");
     }
+
+
+    protected void startPhotoZoom(Uri uri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        // 下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
+        intent.putExtra("crop", "true");
+        // aspectX aspectY 是宽高的比例
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        // outputX outputY 是裁剪图片宽高
+        intent.putExtra("outputX", 150);
+        intent.putExtra("outputY", 150);
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, 3);
+    }
+
+    /**
+     * 从照相机获取图片
+     */
+    public   void getImageFromCamera() {
+        String state = Environment.getExternalStorageState();
+        if (state.equals(Environment.MEDIA_MOUNTED)) {
+            Intent getImageByCamera = new Intent("android.media.action.IMAGE_CAPTURE");
+            startActivityForResult(getImageByCamera, 4);
+        } else {
+            Toast.makeText(getApplicationContext(), "请确认已经插入SD卡", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * 直接从图库获取
+     */
+    public void getImageFromAlbum() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");//相片类型
+        startActivityForResult(intent, 2);
+    }
+
 
 }

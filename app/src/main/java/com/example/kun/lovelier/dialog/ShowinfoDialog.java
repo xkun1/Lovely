@@ -38,7 +38,7 @@ public class ShowinfoDialog extends DialogFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        show= (TextView) view.findViewById(R.id.show);
+//        show= (TextView) view.findViewById(R.id.show);
         show.setText(sex+"/n"+birthday+"/n"+address);
     }
 }

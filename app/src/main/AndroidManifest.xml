@@ -69,9 +69,6 @@
         <activity
             android:name=".view.OrCodeResult"
             android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".view.MaterialActivity"
-            android:parentActivityName=".MainActivity" />
 
         <!--友盟分享-->
         <activity

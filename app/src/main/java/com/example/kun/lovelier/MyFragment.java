@@ -95,11 +95,11 @@ public class MyFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.Rv);
         mRefreshLayout = (SuperSwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         //设置RecylerView布局管理器为垂直垂直排布
-        if (flag == 2) {
-            mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        } else {
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        }
+//        if (flag == 2) {
+//            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        } else {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        }
 
         datas = new ArrayList<>();
         gson = new Gson();
@@ -111,8 +111,6 @@ public class MyFragment extends Fragment {
         SpacesItemDecoration decoration = new SpacesItemDecoration(5);
         mRecyclerView.addItemDecoration(decoration);
     }
-
-
 
 
     private void refresh() {
@@ -423,7 +421,7 @@ public class MyFragment extends Fragment {
 
                     ImageView imageView = holder.getView(R.id.img);
 
-                    TextView title = holder.getView(R.id.img_title);
+//                    TextView title = holder.getView(R.id.img_title);
 
                     Glide.with(getActivity().getApplication())
                             .load(item.getPicUrl())
@@ -437,26 +435,31 @@ public class MyFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
 
-                            ImageDiaLog imageDiaLog = new ImageDiaLog();
-                            Bundle bundle = new Bundle();
-
-                            bundle.putString("imgurl", item.getPicUrl());
-                            imageDiaLog.setArguments(bundle);
-
-                            imageDiaLog.show(getActivity().getFragmentManager(), "aaa");
-
-                        }
-                    });
-
-                    title.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
                             Intent intent = new Intent();
                             intent.putExtra("weburl", item.getUrl());
                             intent.setClass(getActivity(), DetailsActivity.class);
                             startActivity(intent);
+
+//                            ImageDiaLog imageDiaLog = new ImageDiaLog();
+//                            Bundle bundle = new Bundle();
+//
+//                            bundle.putString("imgurl", item.getPicUrl());
+//                            imageDiaLog.setArguments(bundle);
+//
+//                            imageDiaLog.show(getActivity().getFragmentManager(), "aaa");
+
                         }
                     });
+
+//                    title.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            Intent intent = new Intent();
+//                            intent.putExtra("weburl", item.getUrl());
+//                            intent.setClass(getActivity(), DetailsActivity.class);
+//                            startActivity(intent);
+//                        }
+//                    });
 
                 }
             };

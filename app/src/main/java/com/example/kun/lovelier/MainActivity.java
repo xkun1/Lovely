@@ -1,21 +1,25 @@
 package com.example.kun.lovelier;
 
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -32,15 +36,13 @@ import android.widget.Toast;
 
 import com.bigdata.zixinglibrary.ZXing.CaptureActivity;
 import com.example.kun.lovelier.adapter.MyViewPagerAdapter;
+import com.example.kun.lovelier.dialog.CodeResutDialog;
 import com.example.kun.lovelier.view.BaseActivity;
-import com.example.kun.lovelier.view.MaterialActivity;
 import com.example.kun.lovelier.view.OrCodeResult;
-import com.example.kun.lovelier.view.QueryAll;
 import com.example.kun.lovelier.view.WeatherActivity;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +70,10 @@ public class MainActivity extends BaseActivity
 
     private String[] mTitles;  //TabLayout标题
 
+    private int CAMERA_CODE = 1;
+
+    private int LOCATION_CODE = 2;
+
     // 填充到ViewPager中的Fragment
     private List<Fragment> mFragments;
     // ViewPager的数据适配器
@@ -78,7 +84,6 @@ public class MainActivity extends BaseActivity
     protected void initContentView() {
 
         setContentView(R.layout.activity_main);
-
 
         //初始化各种控件
         initView();
@@ -108,6 +113,7 @@ public class MainActivity extends BaseActivity
         ActionBarDrawerToggle mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.open, R.string.close);
         mActionBarDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
+
 
         // 初始化ViewPager的适配器，并设置给它
         mViewPagerAdapter = new MyViewPagerAdapter(getSupportFragmentManager(), mTitles, mFragments);
@@ -217,15 +223,30 @@ public class MainActivity extends BaseActivity
 
         switch (menuItem.getItemId()) {
             case R.id.weather: //天气
-                Intent intentWe = new Intent();
-                intentWe.setClass(MainActivity.this, WeatherActivity.class);
-                startActivity(intentWe);
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
+                    //申请定位权限
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            LOCATION_CODE);
+                } else {
+                    Intent intentWe = new Intent();
+                    intentWe.setClass(MainActivity.this, WeatherActivity.class);
+                    startActivity(intentWe);
+                }
                 break;
             case R.id.two_code: //二维码
-//                Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();
-                Intent intentcode = new Intent();
-                intentcode.setClass(MainActivity.this, CaptureActivity.class);
-                startActivityForResult(intentcode, 1);
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    //申请相机权限
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                            CAMERA_CODE);
+                } else {
+                    Intent intentcode = new Intent();
+                    intentcode.setClass(MainActivity.this, CaptureActivity.class);
+                    startActivityForResult(intentcode, 1);
+                }
+
+
                 break;
             case R.id.query: //查询
                 Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();
@@ -242,7 +263,7 @@ public class MainActivity extends BaseActivity
         }
 
         // Menu item点击后选中，并关闭Drawerlayout
-        setTitle(menuItem.getTitle()); // 改变页面标题，标明导航状态
+//        setTitle(menuItem.getTitle()); // 改变页面标题，标明导航状态
         menuItem.setChecked(true);
         mDrawerLayout.closeDrawers();
         return true;
@@ -253,17 +274,34 @@ public class MainActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == 1) {
-                String action = data.getExtras().getString("result");
-                Intent intent = new Intent();
-                intent.putExtra("result", action);
-                intent.setClass(this, OrCodeResult.class);
-                startActivity(intent);
-            } else if (requestCode == 2) {
-                Uri imgUrl = data.getData();
-                SharedPreferences preferences = getSharedPreferences("imgUrl", MODE_PRIVATE);
-                preferences.edit().putString("imgUrl", String.valueOf(imgUrl)).commit();
-                imageView.setImageURI(imgUrl);
+            switch (requestCode) {
+                case 1: //二维码扫描返回的结果
+                    String action = data.getExtras().getString("result");
+                    Intent intent = new Intent();
+                    intent.putExtra("result", action);
+                    intent.setClass(this, OrCodeResult.class);
+                    startActivity(intent);
+                    break;
+                case 2: //直接从相册获取
+                    startPhotoZoom(data.getData());
+                    break;
+                case 3:
+                    if (data != null) {
+                        Bundle extras = data.getExtras();
+                        if (extras != null) {
+                            Bitmap bitmap = extras.getParcelable("data");
+                            Uri uri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, null, null));
+                            SharedPreferences preferences = getSharedPreferences("imgUrl", MODE_PRIVATE);
+                            preferences.edit().putString("imgUrl", String.valueOf(uri)).commit();
+                            imageView.setImageBitmap(bitmap);
+                        }
+
+
+                    }
+                    break;
+                case 4:  //调用照相机
+                    startPhotoZoom(data.getData());
+                    break;
             }
         } else {
             return;
@@ -302,13 +340,26 @@ public class MainActivity extends BaseActivity
 
     }
 
-
-    protected void getImageFromAlbum() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");//相片类型
-        startActivityForResult(intent, 2);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intentcode = new Intent();
+                intentcode.setClass(MainActivity.this, CaptureActivity.class);
+                startActivityForResult(intentcode, 1);
+            } else {
+                Toast.makeText(this, "请打开相机权限", Toast.LENGTH_LONG).show();
+            }
+        } else if (requestCode == LOCATION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intentWe = new Intent();
+                intentWe.setClass(MainActivity.this, WeatherActivity.class);
+                startActivity(intentWe);
+            } else {
+                Toast.makeText(this, "请打开定位权限", Toast.LENGTH_LONG).show();
+            }
+        }
     }
-
-
 }
 
