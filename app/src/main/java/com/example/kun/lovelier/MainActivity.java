@@ -36,7 +36,8 @@ import android.widget.Toast;
 
 import com.bigdata.zixinglibrary.ZXing.CaptureActivity;
 import com.example.kun.lovelier.adapter.MyViewPagerAdapter;
-import com.example.kun.lovelier.dialog.CodeResutDialog;
+import com.example.kun.lovelier.lock.GestureEditActivity;
+import com.example.kun.lovelier.lock.GestureVerifyActivity;
 import com.example.kun.lovelier.view.BaseActivity;
 import com.example.kun.lovelier.view.OrCodeResult;
 import com.example.kun.lovelier.view.WeatherActivity;
@@ -87,6 +88,12 @@ public class MainActivity extends BaseActivity
 
         //初始化各种控件
         initView();
+
+        SharedPreferences prePassWord = getSharedPreferences("passWord", MODE_PRIVATE);
+        String passWord = prePassWord.getString("passWord", null);
+        if (passWord != null) {
+            startActivity(new Intent(this, GestureVerifyActivity.class));
+        }
 
         SharedPreferences preferences = getSharedPreferences("imgUrl", MODE_PRIVATE);
 
@@ -257,8 +264,9 @@ public class MainActivity extends BaseActivity
             case R.id.nav_share: //分享
                 Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.nav_manage: //设置
-                Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();
+            case R.id.nav_manage: //手势密码设置
+//                Toast.makeText(MainActivity.this, "正在开发。。。", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent().setClass(this, GestureEditActivity.class));
                 break;
         }
 
@@ -268,7 +276,6 @@ public class MainActivity extends BaseActivity
         mDrawerLayout.closeDrawers();
         return true;
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

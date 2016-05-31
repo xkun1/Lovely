@@ -1,1 +1,1 @@
-include ':app', ':zixinglibrary'
+include ':app', ':zixinglibrary', ':locklibrary'

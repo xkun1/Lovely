@@ -1,5 +1,6 @@
 package com.example.kun.lovelier.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -48,9 +49,9 @@ public class MyStaggeredViewAdapter extends RecyclerView.Adapter<MyRecyclerViewH
         this.mDatas = mDatas;
         mLayoutInflater = LayoutInflater.from(mContext);
         mHeights = new ArrayList<>();
-            for (int i = 0; i < mDatas.size(); i++) {
-                mHeights.add((int) (Math.random() * 300) + 200);
-            }
+        for (int i = 0; i < mDatas.size(); i++) {
+            mHeights.add((int) (Math.random() * 300) + 200);
+        }
 
     }
 
@@ -68,7 +69,7 @@ public class MyStaggeredViewAdapter extends RecyclerView.Adapter<MyRecyclerViewH
     public void onBindViewHolder(final MyRecyclerViewHolder holder, final int position) {
 
         ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();//得到item的LayoutParams布局参数
-        if (mHeights.size()>0){
+        if (mHeights.size() > 0) {
             params.height = mHeights.get(position);//把随机的高度赋予itemView布局
             holder.itemView.setLayoutParams(params);//把params设置给itemView布局
         }
@@ -100,13 +101,12 @@ public class MyStaggeredViewAdapter extends RecyclerView.Adapter<MyRecyclerViewH
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.img);
-       holder.img.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-           }
-       });
+        holder.img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
     }
-
 
 
     @Override
@@ -121,6 +121,7 @@ class MyRecyclerViewHolder extends RecyclerView.ViewHolder {
     public RoundedImageView img;
     public RelativeLayout layout;
 
+    @SuppressLint("WrongViewCast")
     public MyRecyclerViewHolder(View itemView) {
         super(itemView);
         imgtitle = (TextView) itemView.findViewById(R.id.img_title);

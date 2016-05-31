@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Lovelier.iml" filepath="$PROJECT_DIR$/Lovelier.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/locklibrary/locklibrary.iml" filepath="$PROJECT_DIR$/locklibrary/locklibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/zixinglibrary/zixinglibrary.iml" filepath="$PROJECT_DIR$/zixinglibrary/zixinglibrary.iml" />
     </modules>
   </component>
